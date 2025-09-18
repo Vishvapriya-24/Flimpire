@@ -3,11 +3,9 @@
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  max-width: 600px;
   width: 520px;
   display :flex;
   flex-direction: column;
-
   align-items: center;
 }
 
@@ -18,21 +16,21 @@
   margin-top: 40px;
 }
 
-h1 {
+.h1 {
   margin-top: 100px;
 }
 
-fieldset {
+.fieldset {
   
   overflow: hidden;
   width: 350px;
 }
 
-legend {
+.legend {
   font-size: 1.2em;
 }
 
-input {
+.input {
    width:100%;
    height:20px;
    border:none;
@@ -40,15 +38,18 @@ input {
    font-size: 1.2em;
 }
 
-input:focus {
+.input:focus {
   border: none;
   outline: none;
 }
 
-button {
+.submit {
   width: 80px;
   padding: 9px;
   text-align: center;
   margin-bottom: 10px;;
 }
 
+.link_signup {
+  border: none;
+}
