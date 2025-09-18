@@ -1,9 +1,8 @@
 .container {
   background: #fff;
   padding: 40px;
-  border-radius: 12px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  width: 520px;
+  width: 610px;
   display :flex;
   flex-direction: column;
   align-items: center;
@@ -16,14 +15,26 @@
   margin-top: 40px;
 }
 
+.inform {
+  display: flex;
+  gap:10px;
+  align-items: center;
+}
+
+.icon {
+  font-size: 1.6em;
+}
+
 .h1 {
   margin-top: 100px;
+  font-size: 3em;
 }
 
 .fieldset {
-  
+  border:2px solid black;
   overflow: hidden;
   width: 350px;
+  margin-bottom: 10px;
 }
 
 .legend {
@@ -48,6 +59,10 @@
   padding: 9px;
   text-align: center;
   margin-bottom: 10px;;
+  border: 1px solid black;
+  border-radius: 45%;
+  cursor: pointer;
+  background-color: rgb(144, 144, 185);
 }
 
 .link_signup {
