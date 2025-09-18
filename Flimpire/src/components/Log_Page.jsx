@@ -1,5 +1,5 @@
 import Log_Anime from "./Log_Anime";
-import SignUp from './SignUp'
+import SignIn from './SignIn'
 import styles from '../style/Log_Page.module.css'
 
 function Log_Page() {
@@ -9,8 +9,8 @@ function Log_Page() {
                 <div className={styles.imageContainer}>
                     <Log_Anime />
                 </div>
-                <div className={styles.signUpContainer}>
-                    <SignUp />
+                <div className={styles.signInContainer}>
+                    <SignIn />
                 </div>
                 
             </div>
