@@ -6,6 +6,9 @@ import { useState } from "react";
 
 function Log_Page() {
     const [signup,setsignup] = useState(false);
+    const handleSignup = ()=> {
+        setsignup(!signup);
+    }
     return (
         <div className={styles.outerContainer}>
             <div className={styles.container}>
@@ -13,7 +16,7 @@ function Log_Page() {
                     <Log_Anime />
                 </div>
                 <div className={styles.signInContainer}>
-                    {signup ? <SignUp /> : <SignIn />}
+                    {signup ? <SignUp /> : <SignIn handleSignup={handleSignup} />}
                 </div>
                 
             </div>

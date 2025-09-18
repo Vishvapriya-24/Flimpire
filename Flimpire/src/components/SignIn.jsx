@@ -1,5 +1,5 @@
 import style from '../style/SignIn.module.css'
-function SignIn() {
+function SignIn({handleSignup}) {
     return (
         <div className={style.container}>
             <h1>Welcome</h1>
@@ -14,7 +14,7 @@ function SignIn() {
                 </fieldset>
                 <center>
                     <button>SignIn</button>
-                    <p>Don't have an account? <span>SignUp</span></p>
+                    <p>Don't have an account? <button onClick={handleSignup}>SignUp</button></p>
                 </center>
                 
             </form>
