@@ -1,8 +1,11 @@
 import Log_Anime from "./Log_Anime";
-import SignIn from './SignIn'
-import styles from '../style/Log_Page.module.css'
+import SignIn from './SignIn';
+import styles from '../style/Log_Page.module.css';
+import SignUp from './SignUp';
+import { useState } from "react";
 
 function Log_Page() {
+    const [signup,setsignup] = useState(false);
     return (
         <div className={styles.outerContainer}>
             <div className={styles.container}>
@@ -10,7 +13,7 @@ function Log_Page() {
                     <Log_Anime />
                 </div>
                 <div className={styles.signInContainer}>
-                    <SignIn />
+                    {signup ? <SignUp /> : <SignIn />}
                 </div>
                 
             </div>

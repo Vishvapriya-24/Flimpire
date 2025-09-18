@@ -12,8 +12,11 @@ function SignIn() {
                     <legend>password </legend>
                     <input type="text"></input>
                 </fieldset>
-                <button>SignIn</button>
-                <p>Already have an account? <span>SignIn</span></p>
+                <center>
+                    <button>SignIn</button>
+                    <p>Don't have an account? <span>SignUp</span></p>
+                </center>
+                
             </form>
         </div>
     )
