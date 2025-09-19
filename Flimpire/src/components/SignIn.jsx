@@ -24,7 +24,7 @@ function SignIn({ handleSignup }) {
 
                 <center>
                     <button className={style.submit}>SignIn</button>
-                    <p>Don't have an account? <button className={style.link_signup} onClick={handleSignup}>SignUp</button></p>
+                    <p style={{color:'white'}}>Don't have an account? <button className={style.link_signup} onClick={handleSignup}>SignUp</button></p>
                 </center>
 
             </form>

@@ -1,23 +1,33 @@
 .container {
-  background: #fff;
-  padding: 40px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  width: 610px;
-  display :flex;
-  flex-direction: column;
-  align-items: center;
+  background-image: url('../assets/finalbackground.png');
+  max-width: 610px;
+  width: 500px;
+  height: 600px;
+  margin-right: 10%;
+  padding: 30px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.3);
+  
+}
+
+.h1{
+  color: #ffff;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-top: 40px;
+  align-items: center;
+  gap: 40px;
+  margin-top: 50px;
 }
 
 .inform {
   display: flex;
   gap:10px;
+  color: red;
   align-items: center;
 }
 
@@ -25,46 +35,49 @@
   font-size: 1.6em;
 }
 
-.h1 {
-  margin-top: 100px;
-  font-size: 3em;
-}
-
 .fieldset {
   border:2px solid black;
   overflow: hidden;
   width: 350px;
   margin-bottom: 10px;
+  background-color: rgb(174, 172, 172);
 }
 
 .legend {
-  font-size: 1.2em;
+  font-size: 1.5em;
+  margin-left: 10px;
+  color: #f60b0b;
 }
 
 .input {
    width:100%;
+   background: transparent;
    height:20px;
    border:none;
    padding:9px;
    font-size: 1.2em;
+   color: #fefdfd;
+
 }
 
 .input:focus {
   border: none;
   outline: none;
+
 }
 
 .submit {
-  width: 80px;
+  width: 150px;
   padding: 9px;
   text-align: center;
   margin-bottom: 10px;;
   border: 1px solid black;
-  border-radius: 45%;
+  border-radius: 5px;
   cursor: pointer;
-  background-color: rgb(144, 144, 185);
+  background-color:rgb(241, 56, 56);
 }
 
 .link_signup {
   border: none;
+  cursor: pointer;
 }
