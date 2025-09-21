@@ -7,3 +7,11 @@ body{
   width: 100%;
   height: 100%;
 }
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
