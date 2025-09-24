@@ -3,7 +3,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import { TbLockPassword } from "react-icons/tb";
 import {useState} from 'react';
 
-function SignIn({ handleSignupToggle,handleSignInSubmit }) {
+function SignIn({ handleSignupToggle,handleSignInSubmit,Message }) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -31,6 +31,7 @@ function SignIn({ handleSignupToggle,handleSignInSubmit }) {
                 <center>
                     <button className={style.submit} >SignIn</button>
                     <p style={{color:'white'}}>Don't have an account? <button className={style.link_signup} onClick={handleSignupToggle}>SignUp</button></p>
+                    {Message && <p style={{ color: "white" }}>{Message}</p>}
                 </center>
 
             </form>

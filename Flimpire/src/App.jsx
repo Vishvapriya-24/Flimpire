@@ -1,16 +1,28 @@
-import { useState } from 'react'
-import Log_Anime from './components/Log_Anime'
-import Log_Page from './components/Log_Page'
-import './App.css'
+import { useState } from 'react';
+import Log_Page from './components/Log_Page';
+import HomePage from './components/HomePage';
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
-    <>
-      <Log_Page />
-    </>
-  )
+    <div>
+        <Routes>
+          <Route path="/" element={<Log_Page />} />
+          <Route 
+            path="/home" 
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            } 
+          />
+        </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;

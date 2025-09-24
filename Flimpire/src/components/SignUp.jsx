@@ -44,7 +44,7 @@ import { FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
 
-function SignUp({ handleSignupToggle, handleSignupSubmit }) {
+function SignUp({ handleSignupToggle, handleSignupSubmit,Message }) {
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [email, setEmail] = useState("");
@@ -142,6 +142,7 @@ function SignUp({ handleSignupToggle, handleSignupSubmit }) {
                             SignIn
                         </span>
                     </p>
+                    {Message && <p style={{ color: "white" }}>{Message}</p>}
                 </div>
             </form>
         </div>

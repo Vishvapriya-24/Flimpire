@@ -3,10 +3,12 @@ import SignIn from './SignIn';
 import styles from '../style/Log_Page.module.css';
 import SignUp from './SignUp';
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 function Log_Page() {
     const [signup,setsignup] = useState(false);
     const [Message,setMessage] = useState("");
+    const navigate = useNavigate();
     const handleSignupToggle = ()=> {
         setsignup(!signup);
     }
@@ -19,7 +21,8 @@ function Log_Page() {
                 email,
                 password
             });
-            setMessage(res.data.msg); // "User inserted successfully"
+            setMessage(res.data.msg);
+            
         } catch (err) {
             if (err.response) {
                 setMessage(err.response.data.error); // e.g. "User already exists"
@@ -33,11 +36,16 @@ function Log_Page() {
     const handleSignInSubmit = async(email,password)=>{
         try {
 
-            const response = await axios.post("http://localhost:8000/signin",{
+            const res = await axios.post("http://localhost:8000/signin",{
                 email,
                 password
             })
-            setMessage(response.data.msg);
+            setMessage(res.data.msg);
+            if (res.data.token) {
+                localStorage.setItem("token", res.data.token);
+            }
+            navigate('/home');
+            
         }catch(err) {
             if(err.response) {
                 setMessage(err.response.data.error);
@@ -52,9 +60,10 @@ function Log_Page() {
         <div className={styles.outerContainer}>
                 
                 <div className={styles.signInContainer}>
-                    {signup ? <SignUp handleSignupToggle={handleSignupToggle} handleSignupSubmit={handleSignupSubmit}/> : <SignIn handleSignupToggle={handleSignupToggle} handleSignInSubmit={handleSignInSubmit}/>}
+                    {signup ? <SignUp handleSignupToggle={handleSignupToggle} handleSignupSubmit={handleSignupSubmit} Message={Message}/> : <SignIn handleSignupToggle={handleSignupToggle} handleSignInSubmit={handleSignInSubmit} Message={Message}/>}
+                    
                 </div>
-                {Message && <p style={{ color: "white" }}>{Message}</p>}
+                
                 
         </div>
     );
