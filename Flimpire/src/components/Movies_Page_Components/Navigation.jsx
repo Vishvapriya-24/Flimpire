@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -10,7 +10,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 // Bootstrap Icons
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-function Navigation({setShowSubscribe}) {
+function Navigation({ setShowSubscribe }) {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -35,17 +35,17 @@ function Navigation({setShowSubscribe}) {
   }, []);
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
       <Container>
-        <Navbar.Brand href="/movies">Flimpire</Navbar.Brand>
+        <Navbar.Brand as={NavLink} to="/movies">Flimpire</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           {/* Left links */}
           <Nav className="me-auto">
-            <Nav.Link href="/movies">Home</Nav.Link>
-            <Nav.Link href="/series">Series</Nav.Link>
-            <Nav.Link href="/movies">Movies</Nav.Link>
-            <Nav.Link href="/contact">Contact</Nav.Link>
+            <Nav.Link as={NavLink} to="/movies">Home</Nav.Link>
+            <Nav.Link as={NavLink} to="/series">Series</Nav.Link>
+            <Nav.Link as={NavLink} to="/movies">Movies</Nav.Link>
+            <Nav.Link as={NavLink} to="/movies/contact">Contact</Nav.Link>
           </Nav>
 
           {/* Right icons */}
@@ -93,22 +93,25 @@ function Navigation({setShowSubscribe}) {
             {/* User Dropdown */}
             <NavDropdown
               title={
-                <i
-                  className="bi bi-person-circle"
-                  style={{ fontSize: "1.2rem" }}
-                ></i>
+                <i className="bi bi-person-circle" style={{ fontSize: "1.2rem" }}></i>
               }
               id="user-dropdown"
               align="end"
             >
-              <NavDropdown.Item href="#profile">Profile</NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/movies/profile">Profile</NavDropdown.Item>
               <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#logout">Logout</NavDropdown.Item>
             </NavDropdown>
 
             {/* Subscribe Button */}
-            <Button variant="warning" onClick={()=>{setShowSubscribe(true)}}  className="ms-2">
+            <Button
+              variant="warning"
+              onClick={() => {
+                setShowSubscribe(true);
+              }}
+              className="ms-2"
+            >
               Subscribe Now
             </Button>
           </Nav>

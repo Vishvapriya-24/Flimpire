@@ -6,6 +6,7 @@ import './App.css';
 import {  Routes, Route } from 'react-router-dom';
 import { HomePage } from './components/Movies_Page_Components/HomePage';
 import Contact from './components/Movies_Page_Components/Contact';
+import ProfilePage from './components/Movies_Page_Components/ProfilePage';
 function App() {
   const [count, setCount] = useState(0);
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/movies" element={< Welcome />}>
           <Route index element={<HomePage />}/>
           <Route path='contact' element={<Contact />} />
+          <Route path='profile' element={<ProfilePage />} />
         </Route>
       </Routes>
   );
