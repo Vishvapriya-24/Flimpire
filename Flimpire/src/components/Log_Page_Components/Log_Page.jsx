@@ -1,6 +1,6 @@
 import axios from 'axios';
 import SignIn from './SignIn';
-import styles from '../style/Log_Page.module.css';
+import styles from '../../style/Log_Page.module.css';
 import SignUp from './SignUp';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
@@ -40,11 +40,11 @@ function Log_Page() {
                 email,
                 password
             })
+
             setMessage(res.data.msg);
             if (res.data.token) {
                 localStorage.setItem("token", res.data.token);
             }
-            navigate('/home');
             
         }catch(err) {
             if(err.response) {

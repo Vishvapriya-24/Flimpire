@@ -39,7 +39,7 @@ export default SignUp;
 */
 
 import { useState } from "react";
-import signUpStyle from '../style/SignUp.module.css';
+import signUpStyle from '../../style/SignUp.module.css';
 import { FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";

@@ -1,4 +1,4 @@
-import style from '../style/SignIn.module.css'
+import style from '../../style/SignIn.module.css'
 import { FaCircleUser } from "react-icons/fa6";
 import { TbLockPassword } from "react-icons/tb";
 import {useState} from 'react';
