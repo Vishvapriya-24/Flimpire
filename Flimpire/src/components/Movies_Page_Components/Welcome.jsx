@@ -1,9 +1,8 @@
 import { useState } from "react";
 import Navigation from "./Navigation";
-import Carousel from "./Carousel";
-import Movies from "./Movies";
 import Plans from "./Plans";
-function Movies_Page() {
+import { Outlet } from "react-router-dom";
+function Welcome() {
   const [showSubscribe, setShowSubscribe] = useState(false);
 
   const handleOverlayClick = (e) => {
@@ -20,9 +19,14 @@ function Movies_Page() {
 
   return (
     <div>
-      <Navigation setShowSubscribe={setShowSubscribe} />
-      <Carousel /> 
-      <Movies /> 
+      <div>
+        <Navigation setShowSubscribe={setShowSubscribe} />
+      </div>
+      <div>
+        <Outlet />
+      </div>
+      
+      
       {showSubscribe && (
         <div
           className="overlay"
@@ -60,4 +64,4 @@ function Movies_Page() {
 }
 
 
-export default Movies_Page;
+export default Welcome;

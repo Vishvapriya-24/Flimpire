@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import Log_Page from './components/Log_Page_Components/Log_Page';
-import Movies_Page from './components/Movies_Page_Components/Movies_Page';
+import Welcome from './components/Movies_Page_Components/Welcome';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import {  Routes, Route } from 'react-router-dom';
+import { HomePage } from './components/Movies_Page_Components/HomePage';
+import Contact from './components/Movies_Page_Components/Contact';
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div>
       <Routes>
         <Route path="/" element={< Log_Page />}></Route>
-        <Route path="/movies" element={< Movies_Page />}></Route>
+        <Route path="/movies" element={< Welcome />}>
+          <Route index element={<HomePage />}/>
+          <Route path='contact' element={<Contact />} />
+        </Route>
       </Routes>
-    </div>
   );
 }
 

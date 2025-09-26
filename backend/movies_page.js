@@ -12,6 +12,7 @@ const carousel = async (req, res) => {
             {params:{api_key:API_KEY, language:"en-US",page:1},
         });
 
+
         const posters = response.data.results.map(movie => ({
             id: movie.id,
             title:movie.title,
