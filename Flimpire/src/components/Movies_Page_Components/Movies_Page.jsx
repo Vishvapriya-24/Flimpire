@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Navigation from "./Navigation";
+import Carousel from "./Carousel";
+import Movies from "./Movies";
 import Plans from "./Plans";
 function Movies_Page() {
   const [showSubscribe, setShowSubscribe] = useState(false);
@@ -19,7 +21,8 @@ function Movies_Page() {
   return (
     <div>
       <Navigation setShowSubscribe={setShowSubscribe} />
-
+      <Carousel /> 
+      <Movies /> 
       {showSubscribe && (
         <div
           className="overlay"
