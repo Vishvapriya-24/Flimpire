@@ -19,7 +19,7 @@ function Movies() {
             <h2 style={{color:"white",marginTop:"10px"}}>Latest Movies</h2>
             <hr style={{ border: "1px solid gray", margin: "20px 0" }} />
         <div style={{ display: "flex",flexWrap: "wrap" , gap: "50px", overflowX: "scroll" }}>
-        {movies.map(movie => (
+        {movies.length && movies.map(movie => (
           <img
             key={movie.id}
             src={movie.poster}

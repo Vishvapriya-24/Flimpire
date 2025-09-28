@@ -10,7 +10,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 // Bootstrap Icons
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-function Navigation({ setShowSubscribe }) {
+function Navigation({ setShowSubscribe, setShowSettings }) {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -99,7 +99,7 @@ function Navigation({ setShowSubscribe }) {
               align="end"
             >
               <NavDropdown.Item as={NavLink} to="/movies/profile">Profile</NavDropdown.Item>
-              <NavDropdown.Item href="#settings">Settings</NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/movies/settings" onClick={() => {setShowSettings(true)}}>Settings</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#logout">Logout</NavDropdown.Item>
             </NavDropdown>

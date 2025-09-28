@@ -18,19 +18,40 @@ const signup = (req, res) => {
 
         try {
             const hashed_password = await bcrypt.hash(password, 9);
-            db.query(insert_query, [name, age, email, hashed_password], (err) => {
-                if (err) return res.status(500).json({ error: "Error inserting user" });
-                res.json({ msg: "User inserted successfully" });
+            db.query(insert_query, [name, age, email, hashed_password], (err, userResult) => {
+                if (err) {
+                    console.log("User Insert Error:", err);
+                    return res.status(500).json({ error: "Error inserting user" });
+                }
+
+                const userId = userResult.insertId;
+                console.log("New UserId:", userId);
+
+                const insert_profile_query = 
+                    "INSERT INTO profiles(user_id, full_name,email, language, timezone) VALUES(?,?,?,?,?)";
+
+                db.query(insert_profile_query, [userId, name,email, "English", "GMT-5"], (err, profileResult) => {
+                    if (err) {
+                        console.log("Profile Insert Error:", err);
+                        return res.status(500).json({ error: "Error inserting profile" });
+                    }
+
+                    console.log("Profile Insert Success:", profileResult);
+                    res.json({ msg: "User & profile created successfully" });
+                });
             });
-        } catch {
+        } catch (e) {
+            console.log("Password Hash Error:", e);
             res.status(500).json({ error: "Password hashing failed" });
         }
     });
 };
 
+
 // Signin function
 const signin = (req, res) => {
     const { email, password } = req.body;
+    console.log(req);
     const select_query = "SELECT id, email, password FROM subscriber WHERE email=?";
 
     db.query(select_query, [email], async (err, result) => {
@@ -45,7 +66,7 @@ const signin = (req, res) => {
         try {
             const isMatch = await bcrypt.compare(password, password_database);
             if (isMatch) {
-                const token = jwt.sign({ id }, process.env.JWT_KEY, { expiresIn: '1h' });
+                const token = jwt.sign({ id:id }, process.env.JWT_KEY, { expiresIn: '1h' });
                 res.json({ token, msg: "Signin successful" });
             } else {
                 res.status(400).json({ error: "Invalid password" });

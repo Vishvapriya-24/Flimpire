@@ -61,7 +61,7 @@ function Carousel() {
 
   return (
     <BootCarousel interval={2000}>
-      {carouselMovies.map((movie) => (
+      {carouselMovies.length && carouselMovies.map((movie) => (
         <BootCarousel.Item key={movie.id}>
           <img
             style = {styles.image}
