@@ -5,7 +5,7 @@ import Settings from './NavigationsPage/SettingsPages/Settings'
 import { Outlet } from "react-router-dom";
 function Welcome() {
   const [showSubscribe, setShowSubscribe] = useState(false);
-  const [showSettings, setShowSettings] = useState(true);
+
 
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains("overlay")) {
@@ -22,7 +22,7 @@ function Welcome() {
   return (
     <div>
       <div>
-        <Navigation setShowSubscribe={setShowSubscribe} setShowSettings={setShowSettings} />
+        <Navigation setShowSubscribe={setShowSubscribe} setShowSettings={setShowSubscribe} />
       </div>
       <div>
         <Outlet />
@@ -61,8 +61,6 @@ function Welcome() {
           </div>
         </div>
       )}
-
-      
     </div>
   );
 }
