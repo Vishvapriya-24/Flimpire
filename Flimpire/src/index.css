@@ -1,4 +1,11 @@
 
+@import "tailwindcss";
+
+@theme {
+  --color-background: #000000;
+  --color-text: #ff0000;
+}
+
 
 *{
   margin:0px;

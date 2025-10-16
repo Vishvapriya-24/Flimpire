@@ -1,46 +1,34 @@
 import axios from "axios";
-import {useEffect, useState} from 'react';
-
-
-// function Carousel() {
-//     const [carouselMovies,setCarouselMovies] = useState([]);
-//     useEffect(() => {
-//   fetch("http://localhost:8000/carousel")
-//     .then(res => res.json())
-//     .then(data => setCarouselMovies(data));
-// }, []);
-
-//     return (
-//         <div>
-//         <h1>seetha</h1>
-//         <div style={{ display: "flex", gap: "10px", overflowX: "scroll" }}>
-//         {carouselMovies.length && carouselMovies.map(movie => (
-//           <img
-//             key={movie.id}
-//             src={movie.poster}
-//             alt={movie.title}
-//             style={{ width: "200px", borderRadius: "8px" }}
-//           />
-//         ))}
-//       </div>
-//       </div>
-//     );
-// }
-
-// export default Carousel;
-
-
-
+import {useContext, useEffect, useState} from 'react';
 import BootCarousel from "react-bootstrap/Carousel";
+import { MyContext } from "../../App";
+import {useQuery}  from '@tanstack/react-query';
+
+
+const FetchCarouselData = async() =>{
+  const res = await axios.get("http://localhost:8000/carousel");
+  return res.data;
+}
 
 function Carousel() {
 
-  const [carouselMovies,setCarouselMovies] = useState([]);
-    useEffect(() => {
-  fetch("http://localhost:8000/carousel")
-    .then(res => res.json())
-    .then(data => setCarouselMovies(data));
-}, []);
+  const {data,isLoading,isError,error,isFetching}=useQuery({
+    queryKey : ["carousel"],
+    queryFn : FetchCarouselData,
+  })
+
+  if(isLoading) {
+    return <h1>Please wait a moment..</h1>
+  }
+  if(isError) {
+    return (
+    <h1>Error while fetching Reload it.{error}</h1>
+    );
+  }
+
+  if(isFetching) {
+    console.log("carousel is fetched correctly");
+  }
 
   const styles = {
     image: {
@@ -60,8 +48,8 @@ function Carousel() {
   };
 
   return (
-    <BootCarousel interval={2000}>
-      {carouselMovies.length && carouselMovies.map((movie) => (
+    <BootCarousel interval={1000}>
+      {data.length && data.map((movie) => (
         <BootCarousel.Item key={movie.id}>
           <img
             style = {styles.image}
