@@ -2,12 +2,37 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('./Database'); // database connection file
+const validator = require('validator');
 
 // Signup function
 const signup = (req, res) => {
     const { name, age, email, password } = req.body;
+
+    // ✅ Step 1: Basic field validation
+    if (!name || !age || !email || !password) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // ✅ Step 2: Email validation
+    if (!validator.isEmail(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    // ✅ Step 3: Password strength validation
+    if (!validator.isStrongPassword(password, {
+        minLength: 8,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1
+    })) {
+        return res.status(400).json({
+            error: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special symbol"
+        });
+    }
+
     const search_query = "SELECT email FROM subscriber WHERE email=?";
-    const insert_query = "INSERT INTO subscriber(name,age,email,password) VALUES(?,?,?,?)";
+    const insert_query = "INSERT INTO subscriber(name, age, email, password) VALUES(?,?,?,?)";
 
     db.query(search_query, [email], async (err, result) => {
         if (err) return res.status(500).json({ error: "Database error" });
@@ -18,6 +43,7 @@ const signup = (req, res) => {
 
         try {
             const hashed_password = await bcrypt.hash(password, 9);
+
             db.query(insert_query, [name, age, email, hashed_password], (err, userResult) => {
                 if (err) {
                     console.log("User Insert Error:", err);
@@ -27,16 +53,15 @@ const signup = (req, res) => {
                 const userId = userResult.insertId;
                 console.log("New UserId:", userId);
 
-                const insert_profile_query = 
-                    "INSERT INTO profiles(user_id, full_name,email, language, timezone) VALUES(?,?,?,?,?)";
+                const insert_profile_query =
+                    "INSERT INTO profiles(user_id, full_name, email, language, timezone) VALUES(?,?,?,?,?)";
 
-                db.query(insert_profile_query, [userId, name,email, "English", "GMT-5"], (err, profileResult) => {
+                db.query(insert_profile_query, [userId, name, email, "English", "GMT-5"], (err, profileResult) => {
                     if (err) {
                         console.log("Profile Insert Error:", err);
                         return res.status(500).json({ error: "Error inserting profile" });
                     }
 
-                    console.log("Profile Insert Success:", profileResult);
                     res.json({ msg: "User & profile created successfully" });
                 });
             });
@@ -51,7 +76,7 @@ const signup = (req, res) => {
 // Signin function
 const signin = (req, res) => {
     const { email, password } = req.body;
-    console.log(req);
+
     const select_query = "SELECT id, email, password FROM subscriber WHERE email=?";
 
     db.query(select_query, [email], async (err, result) => {
@@ -65,14 +90,26 @@ const signin = (req, res) => {
 
         try {
             const isMatch = await bcrypt.compare(password, password_database);
+
             if (isMatch) {
-                const token = jwt.sign({ id:id }, process.env.JWT_KEY, { expiresIn: '1h' });
-                res.json({ token, msg: "Signin successful" });
+                const token = jwt.sign({ id: id }, process.env.JWT_KEY, { expiresIn: '1h' });
+
+                // ✅ Set the token as a secure cookie
+                res.cookie("token", token, {
+                    httpOnly: true,     // cannot access via JS (prevents XSS attacks)
+                    secure: false,      // change to true if using HTTPS
+                    sameSite: "strict", // prevents CSRF
+                    maxAge: 60 * 60 * 1000 // 1 hour
+                });
+
+                return res.json({ msg: "Signin successful" });
             } else {
-                res.status(400).json({ error: "Invalid password" });
+                return res.status(400).json({ error: "Invalid password" });
             }
-        } catch {
-            res.status(500).json({ error: "Password comparison failed" });
+
+        } catch (err) {
+            console.log("Error during signin:", err);
+            return res.status(500).json({ error: "Password comparison failed" });
         }
     });
 };

@@ -114,7 +114,7 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
 const { signup, signin } = require('./log_page');
-const { carousel, movies,getNowplayingMovies, getPopularMovies,getTopRatedMovies } = require('./movies_page');
+const { carousel, movies,getNowPlayingMovies, getPopularMovies,getTopRatedMovies, getUpCommingMovies } = require('./movies_page');
 const { createProfile, updateProfile, getProfile } = require('./Requests/ProfileRequest');
 
 
@@ -130,9 +130,10 @@ app.post('/signin', signin);
 app.get('/carousel', carousel);
 app.get('/movies', movies);
 
-app.get('/movies/now-playing',getNowplayingMovies)
+app.get('/movies/now-playing',getNowPlayingMovies)
 app.get('/movies/popular',getPopularMovies)
-app.get('/movies/top-rated',getTopRatedMovies)
+app.get('/movies/top_rated',getTopRatedMovies)
+app.get('/movies/upcoming',getUpCommingMovies)
 // Profile routes
 app.post('/profile/create', createProfile);   // create new profile
 app.put('/profile/:user_id',upload.single("profile_pic"), updateProfile);   // update existing profile (partial allowed)
