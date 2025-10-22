@@ -6,39 +6,74 @@ const app = express();
 const API_KEY = "57a64673396bec00e661410df51019d4";
 const BASE_URL = "https://api.themoviedb.org/3";
 
+// ✅ Create HTTPS agent to ignore certificate issues safely
+const agent = new https.Agent({
+  keepAlive: true,
+  rejectUnauthorized: false, // ignore SSL verification issues
+});
+axios.defaults.httpsAgent = agent;
 
-const carousel = async (req, res) => {
+// ✅ Helper – get YouTube trailer (with fallback)
+const getMovieTrailer = async (req, res) => {
+  const { movieId } = req.params;
+
   try {
-    const response = await axios.get(`${BASE_URL}/movie/popular`,
-      {
-        params: { api_key: API_KEY, language: "en-US", page: 1 },
-      });
+    // Two API calls: one for videos (trailers), one for details
+    const [videoRes, detailsRes] = await Promise.all([
+      axios.get(`${BASE_URL}/movie/${movieId}/videos`, {
+        params: { api_key: API_KEY },
+      }),
+      axios.get(`${BASE_URL}/movie/${movieId}`, {
+        params: { api_key: API_KEY, language: "en-US" },
+      }),
+    ]);
 
+    // ===== Extract trailer =====
+    let trailer = videoRes.data.results.find(
+      (v) => v.site === "YouTube" && ["Trailer", "Teaser"].includes(v.type)
+    );
+    if (!trailer) {
+      trailer = videoRes.data.results.find((v) => v.site === "YouTube");
+    }
 
-    const posters = response.data.results.map(movie => ({
+    // ===== Extract movie details =====
+    const movie = detailsRes.data;
+
+    const details = {
       id: movie.id,
       title: movie.title,
-      poster: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`,
-    }));
+      overview: movie.overview,
+      rating: movie.vote_average,
+      release_date: movie.release_date,
+      language: movie.original_language,
+      adult_content: movie.adult,
+      backdrop: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+    };
 
-    res.json(posters);
-  }
-  catch (error) {
-    res.status(500).json({ error: error.message });
+    const trailerUrl = trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null;
+
+    res.json({
+      trailer: trailerUrl,
+      details,
+    });
+  } catch (err) {
+    console.error(`❌ Error fetching trailer/details for movie ${movieId}:`, err.message);
+    res.status(500).json({ error: "Failed to fetch movie data" });
   }
 };
 
-const movies = async (req, res) => {
+
+// ✅ Fetch carousel movies
+const carousel = async (req, res) => {
   try {
-    const response = await axios.get(`${BASE_URL}/movie/now_playing`, {
+    const response = await axios.get(`${BASE_URL}/movie/popular`, {
       params: { api_key: API_KEY, language: "en-US", page: 1 },
     });
 
-    // return smaller posters
-    const posters = response.data.results.map(movie => ({
+    const posters = response.data.results.map((movie) => ({
       id: movie.id,
       title: movie.title,
-      poster: `https://image.tmdb.org/t/p/w342${movie.poster_path}`, // smaller size for grid
+      poster: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`,
     }));
 
     res.json(posters);
@@ -47,20 +82,11 @@ const movies = async (req, res) => {
   }
 };
 
-const axiosInstance = axios.create({
-  timeout: 15000, // ⏱️ increase timeout
-  httpsAgent: new https.Agent({
-    keepAlive: true,
-    rejectUnauthorized: false, // 🚫 ignore TLS issues (safe for read-only APIs)
-  }),
-});
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
+// ✅ Fetch now playing movies
 const getNowPlayingMovies = async (req, res) => {
   try {
-    // 1️⃣ Fetch now playing movies
-    const response = await axiosInstance.get(`${BASE_URL}/movie/now_playing`, {
+    const response = await axios.get(`${BASE_URL}/movie/now_playing`, {
       params: {
         api_key: API_KEY,
         region: "IN",
@@ -68,112 +94,78 @@ const getNowPlayingMovies = async (req, res) => {
       },
     });
 
-    const movies = response.data.results;
-
-    // 2️⃣ Get trailers (with retry)
-    const moviesWithTrailers = await Promise.all(
-      movies.map(async (m, index) => {
-        await delay(index * 150); // small gap to avoid rate limits
-
-        let trailerUrl = null;
-
-        for (let attempt = 1; attempt <= 3; attempt++) {
-          try {
-            const videoRes = await axiosInstance.get(`${BASE_URL}/movie/${m.id}/videos`, {
-              params: { api_key: API_KEY },
-            });
-
-            const trailer = videoRes.data.results.find(
-              (v) =>
-                v.site === "YouTube" &&
-                ["Trailer", "Teaser", "Clip", "Featurette"].includes(v.type)
-            );
-            console.log(videoRes.data.results)
-            if (trailer) {
-              trailerUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
-            }
-            break; // ✅ success → break retry loop
-          } catch (err) {
-            console.error(
-              `⚠️ Attempt ${attempt} failed for ${m.title}: ${err.message}`
-            );
-            if (attempt === 3)
-              console.error(`❌ Giving up on ${m.title} after 3 retries`);
-            await delay(500); // wait before retry
-          }
-        }
-
-        return {
-          id: m.id,
+    const movies = response.data.results.map((m) => (
+        {  id: m.id,
           title: m.title,
-          poster: m.poster_path
-            ? `https://image.tmdb.org/t/p/w342${m.poster_path}`
-            : null,
-          videoUrl: trailerUrl,
-        };
-      })
-    );
+          poster: `https://image.tmdb.org/t/p/w342${m.poster_path}`,  }
+    ));
 
-    // 3️⃣ Return result
-    res.json(moviesWithTrailers);
+    res.json(movies);
   } catch (err) {
     console.error("🔥 Error fetching now playing movies:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
 
-
-
+// ✅ Fetch popular movies
 const getPopularMovies = async (req, res) => {
   try {
-    const response = await axios.get(`${BASE_URL}/movie/popular`, { params: { api_key: API_KEY, language: "En-US", page: "1" } })
+    const response = await axios.get(`${BASE_URL}/movie/popular`, {
+      params: { api_key: API_KEY, language: "en-US", page: 1 },
+    });
 
-    const posters = response.data.results.map((m) => (
-      {
-        id: m.id,
-        title: m.title,
-        poster: `http://image.tmdb.org/t/p/w342${m.poster_path}`
-      }
-    ))
+    const posters = response.data.results.map((m) => ({
+      id: m.id,
+      title: m.title,
+      poster: `https://image.tmdb.org/t/p/w342${m.poster_path}`,
+    }));
     res.json(posters);
-  }
-  catch (err) {
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+};
 
+// ✅ Fetch top rated movies
 const getTopRatedMovies = async (req, res) => {
   try {
-    const response = await axios.get(`${BASE_URL}/movie/top_rated`, { params: { api_key: API_KEY, language: "En-US", page: "2", region: "IN" } })
-    const posters = response.data.results.map((m) => (
-      {
-        id: m.id,
-        title: m.title,
-        poster: `http://image.tmdb.org/t/p/w342${m.poster_path}`
-      }
-    ))
+    const response = await axios.get(`${BASE_URL}/movie/top_rated`, {
+      params: { api_key: API_KEY, language: "en-US", page: 2, region: "IN" },
+    });
+
+    const posters = response.data.results.map((m) => ({
+      id: m.id,
+      title: m.title,
+      poster: `https://image.tmdb.org/t/p/w342${m.poster_path}`,
+    }));
     res.json(posters);
-  }
-  catch (err) {
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+};
 
+// ✅ Fetch upcoming movies
 const getUpCommingMovies = async (req, res) => {
   try {
-    const response = await axios.get(`${BASE_URL}/movie/top_rated`, { params: { api_key: API_KEY, language: "En-US", page: "3" } })
-    const posters = response.data.results.map((m) => (
-      {
-        id: m.id,
-        title: m.title,
-        poster: `http://image.tmdb.org/t/p/w342${m.poster_path}`
-      }
-    ))
+    const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
+      params: { api_key: API_KEY, language: "en-US", page: 3 },
+    });
+
+    const posters = response.data.results.map((m) => ({
+      id: m.id,
+      title: m.title,
+      poster: `https://image.tmdb.org/t/p/w342${m.poster_path}`,
+    }));
     res.json(posters);
-  }
-  catch (err) {
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
-module.exports = { carousel, movies, getNowPlayingMovies, getPopularMovies, getTopRatedMovies, getUpCommingMovies };
+};
 
+module.exports = {
+  carousel,
+  getNowPlayingMovies,
+  getPopularMovies,
+  getTopRatedMovies,
+  getUpCommingMovies,
+  getMovieTrailer,
+};
