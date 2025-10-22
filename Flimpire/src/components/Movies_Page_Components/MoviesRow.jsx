@@ -1,7 +1,8 @@
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const fetchMovies = async (category) => {
   const res = await axios.get(`http://localhost:8000/movies/${category}`);
@@ -9,7 +10,9 @@ const fetchMovies = async (category) => {
 };
 
 const MoviesRow = ({ title, category }) => {
+  const navigate = useNavigate();
   const scrollRef = useRef(null);
+  const [selectedTrailer, setSelectedTrailer] = useState(null); // ✅ new state
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["Movies", category],
     queryFn: () => fetchMovies(category),
@@ -17,12 +20,17 @@ const MoviesRow = ({ title, category }) => {
 
   const handleScroll = (direction) => {
     if (scrollRef.current) {
-      const scrollAmount = 6 * 220; // smoother scroll for 6 movies
+      const scrollAmount = 6 * 220;
       scrollRef.current.scrollBy({
         left: direction === "right" ? scrollAmount : -scrollAmount,
         behavior: "smooth",
       });
     }
+  };
+
+  const extractVideoId = (url) => {
+    const match = url.match(/v=([^&]+)/);
+    return match ? match[1] : null;
   };
 
   if (isLoading)
@@ -78,7 +86,32 @@ const MoviesRow = ({ title, category }) => {
     },
     leftArrow: { left: "20px" },
     rightArrow: { right: "20px" },
-    
+
+    // 🎥 trailer styles
+    trailerContainer: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: "30px",
+      position: "relative",
+    },
+    trailerFrame: {
+      width: "80%",
+      height: "450px",
+      border: "none",
+      borderRadius: "15px",
+      boxShadow: "0 0 20px rgba(255,255,255,0.2)",
+    },
+    closeBtn: {
+      marginTop: "15px",
+      backgroundColor: "#ff3333",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "8px 16px",
+      cursor: "pointer",
+      fontSize: "16px",
+    },
   };
 
   return (
@@ -103,9 +136,8 @@ const MoviesRow = ({ title, category }) => {
               alt={m.title}
               style={styles.poster}
               onClick={() => {
-    if (m.videoUrl) window.open(m.videoUrl, "_blank");
-    else alert("Trailer not available 😢");
-  }}
+                navigate(`/movies/movieDetails/${m.id}`,{state:m})
+              }}
               onMouseEnter={(e) => {
                 e.target.style.transform = "scale(1.07)";
                 e.target.style.boxShadow =
@@ -126,12 +158,25 @@ const MoviesRow = ({ title, category }) => {
         >
           <AiOutlineRight size={26} />
         </button>
-
-        {/* Fade bottom gradient */}
-        <div style={styles.gradient}></div>
       </div>
 
-      
+      {/* 🎥 Trailer Player */}
+      {selectedTrailer && (
+        <div style={styles.trailerContainer}>
+          <iframe
+            src={`https://www.youtube.com/embed/${extractVideoId(
+              selectedTrailer
+            )}?autoplay=1&mute=1`}
+            style={styles.trailerFrame}
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            title="Movie Trailer"
+          ></iframe>
+          <button style={styles.closeBtn} onClick={() => setSelectedTrailer(null)}>
+            ✖ Close
+          </button>
+        </div>
+      )}
     </>
   );
 };

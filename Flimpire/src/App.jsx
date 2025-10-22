@@ -19,6 +19,7 @@ import {
 } from "./components/Movies_Page_Components/NavigationsPage/SettingsPages/SettingsPages";
 import Carousel from "./components/Movies_Page_Components/Carousel";
 import Movies from "./components/Movies_Page_Components/Movies";
+import MovieDetails from "./components/Movies_Page_Components/MovieDetails";
 
 // ✅ Create context outside of component
 export const MyContext = createContext();
@@ -28,11 +29,15 @@ function App() {
     // ✅ Wrap everything in the Provider
   
       <Routes>
+
         <Route path="/" element={<Log_Page />} />
+
         <Route path="/movies" element={<Welcome />}>
           <Route index element={<HomePage />} />
           <Route path="contact" element={<Contact />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="movieDetails/:movieId" element={<MovieDetails />} />
+
           <Route path="settings" element={<Settings />}>
             <Route index element={<NotificationsSettings />} />
             <Route path="account" element={<AccountsSettings />} />
@@ -42,7 +47,9 @@ function App() {
             <Route path="people" element={<PeopleSettings />} />
             <Route path="copilot" element={<CopilotSettings />} />
           </Route>
+
         </Route>
+
       </Routes>
   );
 

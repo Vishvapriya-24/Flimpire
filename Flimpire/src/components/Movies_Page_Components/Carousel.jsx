@@ -33,7 +33,7 @@ function Carousel() {
   const styles = {
     image: {
       width: "100%",
-      height: "400px",
+      height: "450px",
       objectPosition:"center",
     },
     caption: {
