@@ -47,7 +47,7 @@ const getMovieTrailer = async (req, res) => {
       release_date: movie.release_date,
       language: movie.original_language,
       adult_content: movie.adult,
-      backdrop: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+      backdrop: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`,
     };
 
     const trailerUrl = trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null;
@@ -59,6 +59,34 @@ const getMovieTrailer = async (req, res) => {
   } catch (err) {
     console.error(`❌ Error fetching trailer/details for movie ${movieId}:`, err.message);
     res.status(500).json({ error: "Failed to fetch movie data" });
+  }
+};
+
+
+const getRecommendation = async (req, res) => {
+  const { movieId } = req.params;
+
+  try {
+    // 🔹 Fetch similar/recommended movies from TMDB
+    const recommendation = await axios.get(`${BASE_URL}/movie/${movieId}/similar`, {
+      params: { api_key: API_KEY, language: "en-US", page: 1 },
+    });
+
+    // 🔹 Map essential movie info
+    const recommendation_movies = recommendation.data.results.map((m) => ({
+      id: m.id,
+      title: m.title,
+      poster: m.poster_path
+        ? `https://image.tmdb.org/t/p/w342${m.poster_path}`
+        : "https://via.placeholder.com/342x513?text=No+Image",
+    }));
+
+    // ✅ Send data back to frontend
+    res.json(recommendation_movies);
+
+  } catch (err) {
+    console.error(`❌ Error fetching recommendation for movie ${movieId}:`, err.message);
+    res.status(500).json({ error: "Failed to fetch recommendation movie data" });
   }
 };
 
@@ -168,4 +196,5 @@ module.exports = {
   getTopRatedMovies,
   getUpCommingMovies,
   getMovieTrailer,
+  getRecommendation,
 };
