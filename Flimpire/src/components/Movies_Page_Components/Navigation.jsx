@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink,useLocation } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -14,7 +14,12 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
+    const handleOpenSettings = (e) => {
+    e.preventDefault();
+    navigate("/movies/settings/account", { state: { from: location.pathname } });
+  };
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
@@ -107,9 +112,8 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
           >
             <NavDropdown.Item as={NavLink} to="/movies/profile">Profile</NavDropdown.Item>
             <NavDropdown.Item
-              as={NavLink}
-              to="/movies/settings"
-              onClick={() => setShowSettings(true)}
+
+              onClick={handleOpenSettings}
             >
               Settings
             </NavDropdown.Item>

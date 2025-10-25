@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MovieSkeleton from "./MovieSkeleton";
 
 const fetchMovies = async (category) => {
   const res = await axios.get(`http://localhost:8000/movies/${category}`);
@@ -33,12 +34,17 @@ const MoviesRow = ({ title, category }) => {
     return match ? match[1] : null;
   };
 
-  if (isLoading)
-    return (
-      <h3 style={{ color: "gray", marginLeft: "20px" }}>
-        Loading {title}...
-      </h3>
-    );
+  if (isLoading) {
+  return (
+    <div style={{ backgroundColor: "#000", padding: "20px 0" }}>
+      <h2 style={{ color: "#fff", marginLeft: "40px", marginBottom: "10px" }}>
+        {title}
+      </h2>
+      <MovieSkeleton />
+    </div>
+  );
+}
+
   if (isError)
     return (
       <h3 style={{ color: "red", marginLeft: "20px" }}>
@@ -136,7 +142,7 @@ const MoviesRow = ({ title, category }) => {
               alt={m.title}
               style={styles.poster}
               onClick={() => {
-                navigate(`/movies/movieDetails/${m.id}`,{state:m})
+                navigate(`/movies/movieDetails/${m.id}`, { state: m })
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = "scale(1.07)";

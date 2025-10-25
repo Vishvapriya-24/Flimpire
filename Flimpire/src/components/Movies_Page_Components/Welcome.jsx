@@ -3,8 +3,10 @@ import Navigation from "./Navigation";
 import Plans from "./Plans";
 import Settings from './NavigationsPage/SettingsPages/Settings'
 import { Outlet } from "react-router-dom";
+import FloatingNav from "./FloatingNav";
 function Welcome() {
   const [showSubscribe, setShowSubscribe] = useState(false);
+  const [showSettings,setShowSettings] = useState(false);
 
 
   const handleOverlayClick = (e) => {
@@ -22,7 +24,7 @@ function Welcome() {
   return (
     <div>
       <div>
-        <Navigation setShowSubscribe={setShowSubscribe} setShowSettings={setShowSubscribe} />
+        <Navigation setShowSubscribe={setShowSubscribe}  setShowSettings={setShowSettings}/>
       </div>
       <div>
         <Outlet />
@@ -61,6 +63,7 @@ function Welcome() {
           </div>
         </div>
       )}
+      <FloatingNav />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import BootCarousel from "react-bootstrap/Carousel";
 import { MyContext } from "../../App";
 import {useQuery}  from '@tanstack/react-query';
+import CarouselSkeleton from "./CarouselSkeleton";
 
 
 const FetchCarouselData = async() =>{
@@ -17,9 +18,7 @@ function Carousel() {
     queryFn : FetchCarouselData,
   })
 
-  if(isLoading) {
-    return <h1>Please wait a moment..</h1>
-  }
+  if (isLoading) return <CarouselSkeleton />;
   if(isError) {
     return (
     <h1>Error while fetching Reload it.{error}</h1>
