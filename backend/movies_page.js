@@ -101,6 +101,7 @@ const carousel = async (req, res) => {
     const posters = response.data.results.map((movie) => ({
       id: movie.id,
       title: movie.title,
+      overview:movie.overview.split('.')[0],
       poster: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`,
     }));
 
@@ -189,6 +190,77 @@ const getUpCommingMovies = async (req, res) => {
   }
 };
 
+
+// 🟢 Fetch Korean (K-drama) Series Example
+const getSeries = async (req, res) => {
+
+  const {category} = req.params;
+  try {
+    const response = await axios.get(`${BASE_URL}/discover/tv`, {
+      params: {
+        api_key: API_KEY,
+        with_original_language: category,
+        with_genres: 10749,  // ✅ Correct spelling
+        sort_by: "popularity.asc",
+        page:3,   // optional, but better for relevance
+      },
+    });
+
+    // 🧩 Transform only the needed data
+    const series = response.data.results
+    .filter((s)=>s.poster_path)
+    .map((s) => ({
+      id: s.id,
+      name: s.name,
+      overview: s.overview,
+      poster: `https://image.tmdb.org/t/p/w1280${s.backdrop_path}`,
+      rating: s.vote_average,
+      releaseDate: s.first_air_date,
+      country: s.origin_country,
+      total_season:s.number_of_seasons || null,
+    }));
+
+    res.json(series);
+  } catch (err) {
+    console.error("Error fetching series:", err.message);
+    res.status(500).json({ error: "Failed to fetch series" });
+  }
+};
+
+const getSeriesEpisodes = async (req,res) => {
+  const { seriesId,seasonId } = req.params;
+  try {
+    const response = await axios.get(`${BASE_URL}/tv/${seriesId}/season/${seasonId}`,{
+      params:{api_key:API_KEY}
+    });
+
+    const episodes = response.data.episodes.map((ep) => ({
+      id: ep.id,
+      name: ep.name,
+      overview: ep.overview,
+      episodeNumber: ep.episode_number,
+      airDate: ep.air_date,
+      stillPath:
+    ep.still_path
+      ? `https://image.tmdb.org/t/p/w500${ep.still_path}`
+      : response.data.poster_path
+      ? `https://image.tmdb.org/t/p/w500${response.data.poster_path}`
+      : "https://via.placeholder.com/500x281?text=No+Image",
+    }));
+
+    res.json({
+      seriesId,
+      seasonId,
+      totalEpisodes: episodes.length,
+      episodes,
+    });
+  } catch (err) {
+    console.error("Error fetching season",seasonId,":", err.message);
+    res.status(500).json({ error: "Failed to fetch Season 1 episodes" });
+  }
+}
+
+
 module.exports = {
   carousel,
   getNowPlayingMovies,
@@ -197,4 +269,6 @@ module.exports = {
   getUpCommingMovies,
   getMovieTrailer,
   getRecommendation,
+  getSeries,
+  getSeriesEpisodes,
 };

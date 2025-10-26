@@ -20,6 +20,8 @@ import {
 import Carousel from "./components/Movies_Page_Components/Carousel";
 import Movies from "./components/Movies_Page_Components/Movies";
 import MovieDetails from "./components/Movies_Page_Components/MovieDetails";
+import Series from "./components/Series_Page_Components/Series";
+import SeriesDetails from "./components/Series_Page_Components/SeriesDetails";
 
 // ✅ Create context outside of component
 export const MyContext = createContext();
@@ -35,6 +37,8 @@ function App() {
         <Route path="/movies" element={<Welcome />}>
           <Route index element={<HomePage />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="series" element={<Series />} />
+          <Route path="seriesDetails" element={<SeriesDetails />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="movieDetails/:movieId" element={<MovieDetails />} />
 

@@ -4,6 +4,7 @@ import Plans from "./Plans";
 import Settings from './NavigationsPage/SettingsPages/Settings'
 import { Outlet } from "react-router-dom";
 import FloatingNav from "./FloatingNav";
+
 function Welcome() {
   const [showSubscribe, setShowSubscribe] = useState(false);
   const [showSettings,setShowSettings] = useState(false);

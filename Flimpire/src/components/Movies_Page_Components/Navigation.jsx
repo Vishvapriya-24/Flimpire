@@ -58,7 +58,7 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
         <Navbar.Collapse id="main-navbar" className="d-none d-lg-flex">
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/movies">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/series">Series</Nav.Link>
+            <Nav.Link as={NavLink} to="/movies/series">Series</Nav.Link>
             <Nav.Link as={NavLink} to="/movies">Movies</Nav.Link>
             <Nav.Link as={NavLink} to="/movies/contact">Contact</Nav.Link>
           </Nav>
@@ -146,7 +146,7 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
           <Offcanvas.Body>
             <Nav className="flex-column">
               <Nav.Link as={NavLink} to="/movies">Home</Nav.Link>
-              <Nav.Link as={NavLink} to="/series">Series</Nav.Link>
+              <Nav.Link as={NavLink} to="/movies/series">Series</Nav.Link>
               <Nav.Link as={NavLink} to="/movies">Movies</Nav.Link>
               <Nav.Link as={NavLink} to="/movies/contact">Contact</Nav.Link>
             </Nav>

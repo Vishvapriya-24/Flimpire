@@ -4,6 +4,8 @@ import { useRef } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import MoviesRow from "./MoviesRow";
 import TrailerBox from "./TrailerBox";
+
+
 function Movies() {
   const containerStyle = {
     backgroundColor: "#000",
