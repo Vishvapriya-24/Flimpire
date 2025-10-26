@@ -1,7 +1,7 @@
 import Carousel from "./Carousel";
 import Movies from "./Movies";
 
-export function HomePage() {
+export function MoviePage() {
     return (
         <div>
             <Carousel /> 

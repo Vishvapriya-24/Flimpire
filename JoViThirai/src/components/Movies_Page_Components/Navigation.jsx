@@ -18,7 +18,7 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
 
     const handleOpenSettings = (e) => {
     e.preventDefault();
-    navigate("/movies/settings/account", { state: { from: location.pathname } });
+    navigate("/home/settings/account", { state: { from: location.pathname } });
   };
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -44,23 +44,23 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
         {/* Small screen hamburger + brand */}
         <div className="d-flex align-items-center d-lg-none">
           <Navbar.Toggle aria-controls="offcanvasNavbar" className="me-2" />
-          <Navbar.Brand as={NavLink} to="/movies" className="fw-bold text-light mb-0">
+          <Navbar.Brand as={NavLink} to="/" className="fw-bold text-light mb-0">
             Flimpire
           </Navbar.Brand>
         </div>
 
         {/* Large screen brand */}
-        <Navbar.Brand as={NavLink} to="/movies" className="fw-bold text-light d-none d-lg-block">
+        <Navbar.Brand as={NavLink} to="/" className="fw-bold text-light d-none d-lg-block">
           Flimpire
         </Navbar.Brand>
 
         {/* Large screen Nav Links */}
         <Navbar.Collapse id="main-navbar" className="d-none d-lg-flex">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/movies">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/movies/series">Series</Nav.Link>
-            <Nav.Link as={NavLink} to="/movies">Movies</Nav.Link>
-            <Nav.Link as={NavLink} to="/movies/contact">Contact</Nav.Link>
+            <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+            <Nav.Link as={NavLink} to="/home/series">Series</Nav.Link>
+            <Nav.Link as={NavLink} to="/home/movies">Movies</Nav.Link>
+            <Nav.Link as={NavLink} to="/home/contact">Contact</Nav.Link>
           </Nav>
         </Navbar.Collapse>
 
@@ -110,7 +110,7 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
             align="end"
             className="me-3"
           >
-            <NavDropdown.Item as={NavLink} to="/movies/profile">Profile</NavDropdown.Item>
+            <NavDropdown.Item as={NavLink} to="/home/profile">Profile</NavDropdown.Item>
             <NavDropdown.Item
 
               onClick={handleOpenSettings}
@@ -145,10 +145,10 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="flex-column">
-              <Nav.Link as={NavLink} to="/movies">Home</Nav.Link>
-              <Nav.Link as={NavLink} to="/movies/series">Series</Nav.Link>
-              <Nav.Link as={NavLink} to="/movies">Movies</Nav.Link>
-              <Nav.Link as={NavLink} to="/movies/contact">Contact</Nav.Link>
+              <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+              <Nav.Link as={NavLink} to="/home/series">Series</Nav.Link>
+              <Nav.Link as={NavLink} to="/home/movies">Movies</Nav.Link>
+              <Nav.Link as={NavLink} to="/home/contact">Contact</Nav.Link>
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>

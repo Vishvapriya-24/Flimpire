@@ -93,7 +93,7 @@ function Series_Row({ title, category }) {
                 src={item.poster}
                 alt={item.title || item.name}
                 className="series-image"
-                onClick={() => navigate("/movies/seriesDetails", { state: item })}
+                onClick={() => navigate("/home/series/seriesDetails", { state: item })}
               />
 
               <div className="series-overlay">

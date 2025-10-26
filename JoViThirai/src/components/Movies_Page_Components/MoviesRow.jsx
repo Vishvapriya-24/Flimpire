@@ -142,7 +142,7 @@ const MoviesRow = ({ title, category }) => {
               alt={m.title}
               style={styles.poster}
               onClick={() => {
-                navigate(`/movies/movieDetails/${m.id}`, { state: m })
+                navigate(`/home/movies/movieDetails`, { state: m })
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = "scale(1.07)";
