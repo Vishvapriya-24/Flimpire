@@ -95,12 +95,14 @@ const signin = (req, res) => {
                 const token = jwt.sign({ id: id }, process.env.JWT_KEY, { expiresIn: '1h' });
 
                 // ✅ Set the token as a secure cookie
+                console.log("hdjhdj");
                 res.cookie("token", token, {
                     httpOnly: true,     // cannot access via JS (prevents XSS attacks)
                     secure: false,      // change to true if using HTTPS
-                    sameSite: "strict", // prevents CSRF
+                    sameSite: "lax", // prevents CSRF
                     maxAge: 60 * 60 * 1000 // 1 hour
                 });
+                console.log(req.cookies);
 
                 return res.json({ msg: "Signin successful" });
             } else {

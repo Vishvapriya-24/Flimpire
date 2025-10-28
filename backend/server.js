@@ -4,6 +4,8 @@
 // server.js
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require("cookie-parser");
+
 require('dotenv').config();
 require('./Database'); // just runs the db connection
 const multer = require("multer");
@@ -12,12 +14,21 @@ const upload = multer({ dest: "uploads/" });
 const { signup, signin } = require('./log_page');
 const { carousel, getNowPlayingMovies, getPopularMovies,getTopRatedMovies, getUpCommingMovies, getMovieTrailer, getRecommendation, getSeries, getSeriesEpisodes } = require('./movies_page');
 const { createProfile, updateProfile, getProfile } = require('./Requests/ProfileRequest');
+const verifyToken = require('./authMiddleware');
 
 
 const app = express();
-app.use('/uploads', express.static('uploads'));
-app.use(cors());
+app.use(cookieParser());
+
+app.use(cors({origin:"http://localhost:5173",credentials:true}));
+
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+
+
+app.get('/check-auth',verifyToken,(req,res)=>{
+    res.json({loggedIn:true,user:req.user});
+});
 
 // Routes
 app.post('/signup', signup);

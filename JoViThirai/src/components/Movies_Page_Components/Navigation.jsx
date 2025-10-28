@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate, NavLink,useLocation } from "react-router-dom";
+import { useState, useEffect,useRef } from "react";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -13,21 +13,52 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 function Navigation({ setShowSubscribe, setShowSettings }) {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState([])
   const navigate = useNavigate();
   const location = useLocation();
+  const [show, setShow] = useState(false);
+  const searchRef = useRef(null);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-    const handleOpenSettings = (e) => {
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("recentSearches")) || [];
+    setRecentSearches(stored);
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSearch(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [])
+
+  const handleOpenSettings = (e) => {
     e.preventDefault();
     navigate("/home/settings/account", { state: { from: location.pathname } });
   };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
+      const stored = JSON.parse(localStorage.getItem("recentsearches")) || [];
+      const updated = [query, ...stored.filter((i) => i !== query)].slice(0, 6)
+
+      localStorage.setItem("recentSearches", JSON.stringify(updated));
+      setRecentSearches(updated);
+
       navigate(`/search?q=${encodeURIComponent(query)}`);
+
       setQuery("");
       setShowSearch(false);
     }
   };
+
+
 
   // Escape key closes search
   useEffect(() => {
@@ -43,7 +74,7 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
       <Container fluid>
         {/* Small screen hamburger + brand */}
         <div className="d-flex align-items-center d-lg-none">
-          <Navbar.Toggle aria-controls="offcanvasNavbar" className="me-2" />
+          <Navbar.Toggle aria-controls="offcanvasNavbar" className="me-2" onClick={handleShow} />
           <Navbar.Brand as={NavLink} to="/" className="fw-bold text-light mb-0">
             Flimpire
           </Navbar.Brand>
@@ -68,25 +99,54 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
         <div className="d-flex align-items-center ms-auto">
           {/* Search box */}
           {showSearch && (
-            <Form
-              className="me-3"
-              style={{ minWidth: "200px" }}
-              onSubmit={handleSearchSubmit}
-            >
-              <InputGroup size="sm">
-                <Form.Control
-                  type="text"
-                  placeholder="Search movies..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  autoFocus
-                />
-                <Button type="submit" variant="primary">
-                  Go
-                </Button>
-              </InputGroup>
-            </Form>
-          )}
+            <div className="position-relative me-3">
+              <Form
+                className="me-3"
+                style={{ minWidth: "200px" }}
+                onSubmit={handleSearchSubmit}
+              >
+                <InputGroup size="sm">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search movies..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    autoFocus
+                  />
+                  <Button type="submit" variant="primary">
+                    Go
+                  </Button>
+                </InputGroup>
+              </Form>
+              {(recentSearches.length > 0 || query.trim()) && (
+                <div
+                  className="position-absolute mt-1"
+                  style={{
+                    width: "100%",
+                    background: "rgba(40,40,40,0.85)",
+                    backdropFilter: "blur(8px)",
+                    borderRadius: "8px",
+                    zIndex: 10,
+                    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  {recentSearches.slice(0, 6).map((item, i) => (
+                    <div
+                      key={i}
+                      className="text-light px-3 py-2 hover-bg"
+                      style={{ cursor: "pointer", fontSize: "0.9rem" }}
+                      onClick={() => {
+                        navigate(`/search?q=${encodeURIComponent(item)}`);
+                        setShowSearch(false);
+                      }}
+                    >
+                      <i className="bi bi-clock-history me-2 text-warning"></i>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>)}
 
           {/* Icons with spacing */}
           <Nav.Link
@@ -135,8 +195,10 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
           id="offcanvasNavbar"
           aria-labelledby="offcanvasNavbarLabel"
           placement="start"
+          show={show}
+          onHide={handleClose}
           className="d-lg-none"
-          style={{ width: "250px" }}  
+          style={{ width: "250px" }}
         >
           <Offcanvas.Header closeButton>
             <Offcanvas.Title id="offcanvasNavbarLabel" className="fw-bold">
@@ -145,10 +207,10 @@ function Navigation({ setShowSubscribe, setShowSettings }) {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="flex-column">
-              <Nav.Link as={NavLink} to="/">Home</Nav.Link>
-              <Nav.Link as={NavLink} to="/home/series">Series</Nav.Link>
-              <Nav.Link as={NavLink} to="/home/movies">Movies</Nav.Link>
-              <Nav.Link as={NavLink} to="/home/contact">Contact</Nav.Link>
+              <Nav.Link as={NavLink} to="/" onClick={handleClose}>Home</Nav.Link>
+              <Nav.Link as={NavLink} to="/home/series" onClick={handleClose}>Series</Nav.Link>
+              <Nav.Link as={NavLink} to="/home/movies" onClick={handleClose}>Movies</Nav.Link>
+              <Nav.Link as={NavLink} to="/home/contact" onClick={handleClose}>Contact</Nav.Link>
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>

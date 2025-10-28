@@ -23,6 +23,8 @@ import MovieDetails from "./components/Movies_Page_Components/MovieDetails";
 import Series from "./components/Series_Page_Components/Series";
 import SeriesDetails from "./components/Series_Page_Components/SeriesDetails";
 import { MoviePage } from "./components/Movies_Page_Components/MoviePage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import SearchResult from "./components/Movies_Page_Components/SearchResult";
 
 // ✅ Create context outside of component
 export const MyContext = createContext();
@@ -32,11 +34,11 @@ function App() {
     // ✅ Wrap everything in the Provider
   
       <Routes>
-
+        <Route path='/search' element={<SearchResult/>}/>
         <Route path="/" element={<HomePage />} />
-
+        <Route path="/login" element={<Log_Page/>} />
         <Route path="/home" element={<Welcome />}>
-          <Route path="movies" element={<MoviePage />} />
+          <Route path="movies" element={<ProtectedRoute><MoviePage /></ProtectedRoute>} />
           <Route path="contact" element={<Contact />} />
           <Route path="series" element={<Series />} />
           <Route path="series/seriesDetails" element={<SeriesDetails />} />

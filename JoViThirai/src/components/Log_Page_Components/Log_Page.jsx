@@ -39,9 +39,10 @@ function Log_Page() {
             const res = await axios.post("http://localhost:8000/signin",{
                 email,
                 password
-            })
+            },{withCredentials:true})
 
             setMessage(res.data.msg);
+            navigate('/home/movies');
             if (res.data.token) {
                 localStorage.setItem("token", res.data.token);
             }
